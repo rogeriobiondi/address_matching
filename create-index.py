@@ -10,20 +10,33 @@ client = OpenSearch(
     ssl_show_warn = False
 )
 
-# Create an index
 response = client.indices.create( 'address-index', {
-  'settings': {
+    'settings': {
         'index': {
             'number_of_shards': 1
         },
         "analysis": {
+            "normalizer": {
+                "lado_normalizer": {
+                    "type": "custom",
+                    "filter": ["lowercase"]
+                }
+            },
             "analyzer": {
-                "custom_analyzer": {
+                "logradouro_analyzer": {
                     "tokenizer": "standard",
-                    "filter": [ 
-                        "lowercase", 
+                    "filter": [
+                        "lowercase",
                         "ascii_folding",
                         "portuguese_stop",
+                        "portuguese_stemmer"
+                    ]
+                },
+                "cidade_analyzer": {
+                    "tokenizer": "standard",
+                    "filter": [
+                        "lowercase",
+                        "ascii_folding",
                         "portuguese_stemmer"
                     ]
                 }
@@ -40,7 +53,7 @@ response = client.indices.create( 'address-index', {
                 "portuguese_stemmer": {
                     "type": "stemmer",
                     "language": "light_portuguese"
-                }
+                }            
             }
         }
     },
@@ -48,7 +61,7 @@ response = client.indices.create( 'address-index', {
         "properties": {
             "logradouro": {
                 "type": "text",
-                "analyzer": "custom_analyzer",
+                "analyzer": "logradouro_analyzer",
                 "fields": {
                     "keyword": {
                         "type": "keyword",
@@ -58,17 +71,7 @@ response = client.indices.create( 'address-index', {
             },
             "cidade": {
                 "type": "text",
-                "analyzer": "custom_analyzer",
-                "fields": {
-                    "keyword": {
-                        "type": "keyword",
-                        "ignore_above": 256
-                    }
-                }
-            },
-            "uf": {
-                "type": "text",
-                "analyzer": "custom_analyzer",
+                "analyzer": "cidade_analyzer",
                 "fields": {
                     "keyword": {
                         "type": "keyword",
@@ -78,8 +81,26 @@ response = client.indices.create( 'address-index', {
             },
             "cep": {
                 "type": "integer"                
-            }
-
+            },
+            "num_inicial": {
+                "type": "integer"                
+            },
+            "num_final": {
+                "type": "integer"                
+            },
+            "lado": {
+                "type": "text",
+                "analyzer": "cidade_analyzer",
+                "fields": {
+                    "normalize": {
+                        "type": "keyword",
+                        "normalizer": "lado_normalizer"
+                    },
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
+            },
         }
     }
 })

@@ -73,22 +73,51 @@ class CommandParser(cmd.Cmd):
               "query": end["logradouro"],
               "type": "most_fields",
               "fields": [ "tipo", "logradouro" ],
-              "fuzziness": 2.0
+              "fuzziness": 3.0
             } 
           })
+        
+        if 'numero' in end:
+          if int(end['numero']) % 2 == 0:
+            lado = "p"
+          else:
+            lado = "i"
+          q['query']['dis_max']['queries'].append({
+                    "bool": {
+                        "must": [
+                            {
+                                "range": {
+                                    "num_inicial": {
+                                        "lte": int(end['numero'])
+                                    }
+                                }
+                            },
+                            {
+                                "range": {
+                                    "num_final": {
+                                        "gte": int(end['numero'])
+                                    }
+                                }
+                            },
+                            {
+                               "match": { "lado.normalize": lado } 
+                            }
+                        ]
+                    }
+                })
 
         # Sem campos de busca selecionados
         if len(q['query']['dis_max']['queries']) == 0:
           print("Endereço incompleto")
           return
-
+        
         response = client.search(
             body = q,
             index = 'address-index'
         )
         print('\nSearch results:')
         tab = PrettyTable()
-        tab.field_names = ["Score", "CEP", "UF", "Cidade", "Bairro", "Tipo", "Logradouro"]
+        tab.field_names = ["Score", "CEP", "UF", "Cidade", "Bairro", "Tipo", "Logradouro", "Ini", "Fim", "Lado"]
         hits = response['hits']['hits']
         for hit in hits:
             tab.add_row([hit['_score'],
@@ -97,7 +126,11 @@ class CommandParser(cmd.Cmd):
                         hit['_source']['cidade'], 
                         hit['_source']['bairro'],
                         hit['_source']['tipo'], 
-                        hit['_source']['logradouro']])
+                        hit['_source']['logradouro'],
+                        hit['_source']['num_inicial'],
+                        hit['_source']['num_final'],
+                        hit['_source']['lado'],
+            ])
         print(tab, '\n')
 
 CommandParser().cmdloop()

@@ -28,12 +28,17 @@ query = """
 	   localidade.loc_no as cidade,
 	   bairro.bai_no as bairro,
 	   logradouro.tlo_tx as tipo,
-	   logradouro.log_no
-    FROM log_logradouro logradouro,
-        log_localidade localidade,
-        log_bairro bairro
-    WHERE logradouro.loc_nu = localidade.loc_nu
-    AND	  logradouro.bai_nu_ini = bairro.bai_nu
+	   logradouro.log_no as logradouro,
+	   replace(faixas.sec_nu_ini, ',', '') as num_inicial,
+	   replace(faixas.sec_nu_fim, ',', '') as num_final,	   
+	   faixas.sec_in_lado as lado
+    FROM log_logradouro logradouro
+	JOIN log_localidade localidade
+		ON localidade.loc_nu = logradouro.loc_nu  
+	JOIN log_bairro bairro
+		ON bairro.bai_nu = logradouro.bai_nu_ini
+	FULL OUTER JOIN log_num_sec faixas
+		ON faixas.log_nu = logradouro.log_nu
 """
 
 cursor.execute(query)
@@ -52,7 +57,10 @@ for row in records:
         'cidade': row[3],
         'bairro': row[4],
         'tipo': row[5],
-        'logradouro': row[6]
+        'logradouro': row[6],
+        'num_inicial': row[7],
+        'num_final': row[8],
+        'lado': row[9]
     }
     bulk_data.append({ "_index": "address-index", "_id": id, "_source": document })
     cont = cont + 1
