@@ -18,15 +18,28 @@ response = client.indices.create( 'address-index', {
         },
         "analysis": {
             "analyzer": {
-                "custom_asciifolding": {
+                "custom_analyzer": {
                     "tokenizer": "standard",
-                    "filter": [ "lowercase", "my_ascii_folding" ]
+                    "filter": [ 
+                        "lowercase", 
+                        "ascii_folding",
+                        "portuguese_stop",
+                        "portuguese_stemmer"
+                    ]
                 }
             },
             "filter": {
-                "my_ascii_folding": {
+                "ascii_folding": {
                     "type": "asciifolding",
                     "preserve_original": True
+                },
+                "portuguese_stop": {
+                    "type": "stop",
+                    "stopwords": "_portuguese_"
+                },
+                "portuguese_stemmer": {
+                    "type": "stemmer",
+                    "language": "light_portuguese"
                 }
             }
         }
@@ -35,7 +48,7 @@ response = client.indices.create( 'address-index', {
         "properties": {
             "logradouro": {
                 "type": "text",
-                "analyzer": "custom_asciifolding",
+                "analyzer": "custom_analyzer",
                 "fields": {
                     "keyword": {
                         "type": "keyword",
@@ -45,7 +58,7 @@ response = client.indices.create( 'address-index', {
             },
             "cidade": {
                 "type": "text",
-                "analyzer": "custom_asciifolding",
+                "analyzer": "custom_analyzer",
                 "fields": {
                     "keyword": {
                         "type": "keyword",
@@ -55,7 +68,7 @@ response = client.indices.create( 'address-index', {
             },
             "uf": {
                 "type": "text",
-                "analyzer": "custom_asciifolding",
+                "analyzer": "custom_analyzer",
                 "fields": {
                     "keyword": {
                         "type": "keyword",

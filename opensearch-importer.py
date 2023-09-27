@@ -59,7 +59,7 @@ for row in records:
     if cont >= CHUNK_SIZE:
         bulk(client, bulk_data)
         total = total + cont
-        print(f"Linhas indexadas {total}...")
+        print(f"Logradouros indexados {total}...")
         bulk_data = []
         cont = 0
 # Insere o bloco final de linhas
