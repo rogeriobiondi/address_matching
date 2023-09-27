@@ -65,6 +65,10 @@ while True:
       } 
     })
 
+  # Sem campos de busca selecionados
+  if len(q['query']['dis_max']['queries']) == 0:
+    continue
+
   response = client.search(
       body = q,
       index = 'address-index'
