@@ -1,13 +1,12 @@
 import psycopg2
-import time
-
 from opensearchpy import OpenSearch
+from opensearchpy.helpers import bulk
 
 host = "localhost"
 database = "correios"
 user = "postgres"
 password = "postgres"
-CHUNK_SIZE = 5000
+CHUNK_SIZE = 10000
 
 client = OpenSearch(
     hosts = [{ 'host': 'localhost', 'port': 9200 }],
@@ -41,6 +40,10 @@ cursor.execute(query)
 
 records = cursor.fetchall()
 
+bulk_data = []
+cont = 0
+total = 0
+
 for row in records:
     id = row[0]
     document = {
@@ -51,12 +54,15 @@ for row in records:
         'tipo': row[5],
         'logradouro': row[6]
     }
-    response = client.index(
-        index = 'address-index',
-        body = document,
-        id = id,
-        refresh = True
-    )
-    print('\nAdding document:')
-    print(response)
-    # time.sleep(1/1000)
+    bulk_data.append({ "_index": "address-index", "_id": id, "_source": document })
+    cont = cont + 1
+    if cont >= CHUNK_SIZE:
+        bulk(client, bulk_data)
+        total = total + cont
+        print(f"Linhas indexadas {total}...")
+        bulk_data = []
+        cont = 0
+# Insere o bloco final de linhas
+bulk(client, bulk_data)
+total = total + cont
+print(f"Total Rows Inserted {total}...")

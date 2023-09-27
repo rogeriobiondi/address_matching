@@ -44,29 +44,6 @@ search-address: ## Start Search Address App
 delete-index: ## Delete index
 	@poetry run python delete-index.py
 
-
-
-
-
-
-
-
-
-
-
-.PHONY: create-document
-create-document: ## Create document
-	@poetry run python create-document.py
-
-.PHONY: search-document
-search-document: ## Search document
-	@poetry run python search-document.py
-
-.PHONY: delete-document
-delete-document: ## Search document
-	@poetry run python delete-document.py
-
-
-.PHONY: run-api
-run-api:  ## Stop infra
-	@poetry run uvicorn main:app --reload --port 9090 --host 0.0.0.0 --reload
+.PHONY: infra-stop
+infra-stop: ## Stop infra
+	@docker-compose down

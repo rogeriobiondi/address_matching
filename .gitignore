@@ -42,3 +42,5 @@ data/correios/LOG_UNID_OPER.TXT
 data/correios/LOG_VAR_BAI.TXT
 data/correios/LOG_VAR_LOC.TXT
 data/correios/LOG_VAR_LOG.TXT
+__pycache__
+**/**.pyc

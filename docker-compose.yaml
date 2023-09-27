@@ -18,5 +18,11 @@ services:
       - db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=postgres
+  libpostal:
+    build:
+      context: .
+      dockerfile: Dockerfile-libpostal
+    ports:
+      - "8000:8000"
 volumes:
   db-data:

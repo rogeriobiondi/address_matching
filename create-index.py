@@ -42,7 +42,31 @@ response = client.indices.create( 'address-index', {
                         "ignore_above": 256
                     }
                 }
+            },
+            "cidade": {
+                "type": "text",
+                "analyzer": "custom_asciifolding",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                }
+            },
+            "uf": {
+                "type": "text",
+                "analyzer": "custom_asciifolding",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                }
+            },
+            "cep": {
+                "type": "integer"                
             }
+
         }
     }
 })

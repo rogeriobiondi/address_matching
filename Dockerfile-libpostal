@@ -1,0 +1,34 @@
+FROM python:3.12.0rc1
+
+WORKDIR /app
+
+RUN apt update \
+    && apt install -y \
+        curl \
+        autoconf \
+        automake \
+        libtool \
+        pkg-config \
+    && apt install -y \
+        build-essential \
+        cmake \
+        wget \
+        git \
+    && git clone https://github.com/openvenues/libpostal \
+    && cd libpostal \
+    && ./bootstrap.sh \
+    && ./configure --datadir="/app" \
+    && make -j4 \
+    && make install \
+    && ldconfig
+
+RUN pip install \
+    setuptools \
+    && pip install \
+        postal fastapi uvicorn
+
+COPY libpostal-api.py /app
+
+EXPOSE 8000
+
+ENTRYPOINT [ "uvicorn", "libpostal-api:app", "--host", "0.0.0.0", "--port", "8000" ]

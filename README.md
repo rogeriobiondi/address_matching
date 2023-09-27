@@ -2,22 +2,40 @@
 
 ## Instructions
 
-### Initial setup
-```
-# psycopg2 pre-reqs
-sudo apt install python3-dev libpq-dev 
+### Prereqs
 
-# Setup
+```
+# install psycopg2 pre-reqs
+sudo apt install python3-dev libpq-dev 
+```
+
+### Build service containers
+
+```
 make build-pg
+```
+
+### Starting services
+
+```
 make infra-start
+```
+
+### Setting up libraries
+
+```
 make setup
+```
+
+### Creating Opensearch Index
+
+```
 make create-index
 ```
 
-### Create schemas
+### Create Database schemas
 
 - Run the scripts bellow against pg database to create the `correios` database and schema: `sql/correios-schema.sql`
-
 
 ### Import Correios data files
 
@@ -36,7 +54,6 @@ make import-correios-files
 ```
 make import-opensearch
 ```
-
 
 ## Testing
 
