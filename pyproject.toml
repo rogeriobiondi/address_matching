@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "opensearch"
+version = "0.1.0"
+description = ""
+authors = ["Rogerio Biondi <rogerio.biondi@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+opensearch-py = "^2.3.1"
+fastapi = "^0.103.1"
+uvicorn = "^0.23.2"
+psycopg2 = "^2.9.7"
+prettytable = "^3.9.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

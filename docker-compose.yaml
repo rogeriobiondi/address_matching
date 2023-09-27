@@ -1,0 +1,22 @@
+version: '3'
+services:
+  opensearch:
+    image: opensearchproject/opensearch:latest
+    container_name: opensearch
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200 # REST API
+      - 9600:9600 # Performance Analyzer
+  postgresql:
+    build:
+      context: .
+      dockerfile: Dockerfile-pg
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+volumes:
+  db-data:
