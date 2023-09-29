@@ -1,4 +1,4 @@
-# poc_enderecos
+# address_matching
 
 This is a proof of concept using libpostal machine learning library + opensearch to match any address provided (in Brazil) by the user.
 
@@ -64,5 +64,7 @@ make import-opensearch
 ```
 make search-address
 ```
+
+The address with the higher score will be the matching.
 
 [![search.png](images/search.png)]
