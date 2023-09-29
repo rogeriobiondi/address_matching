@@ -1,5 +1,7 @@
 # poc_enderecos
 
+This is a proof of concept using libpostal machine learning library + opensearch to match any address provided (in Brazil) by the user.
+
 ## Instructions
 
 ### Prereqs
