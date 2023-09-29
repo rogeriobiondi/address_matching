@@ -62,3 +62,5 @@ make import-opensearch
 ```
 make search-address
 ```
+
+[![search.png](images/search.png)]
